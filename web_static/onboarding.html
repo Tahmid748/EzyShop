@@ -7,5 +7,5 @@
       <section id="initial-step"><label>Business name<input name="business_name" required placeholder="e.g. Acme Fashion"></label><label>Inventory images<input id="images" name="images" type="file" accept="image/png,image/jpeg,image/webp" multiple required><small>One image creates one product listing.</small></label><button type="button" id="continue">Continue to item details</button></section>
       <section id="details-step" hidden><h2>Item details</h2><p>Review each item before it is published. “Generate” creates a draft from the image filename; always confirm price and quantity.</p><div id="item-forms"></div><button>Save & index inventory</button></section><p id="status" role="status"></p>
     </form>
-  </main><script src="/static/onboarding.js"></script>
+  </main><div id="indexing" class="loading-screen" hidden><div><span class="spinner"></span><h2>Indexing your inventory</h2><p>Saving your listings and creating local image search vectors…</p></div></div><script src="/static/onboarding.js"></script>
 </body></html>

@@ -15,9 +15,11 @@ from telegram import Bot
 
 from source.config.config import DEV_TELEGRAM_USER_ID, PUBLIC_BASE_URL, TELEGRAM_BOT_TOKEN
 from source.database.store import (
-    add_image, add_product, create_business, create_order, find_products, get_business, list_businesses,
+    add_image, add_product, catalog, create_business, create_order, find_products, get_business, list_businesses,
 )
+from source.agent.customer_agent import answer_customer
 from source.embeddings.clip import embed_image, embed_text
+from source.inventory.generate_details import generate_details
 
 ROOT = Path(__file__).resolve().parent
 STATIC = ROOT / "web_static"
@@ -74,6 +76,16 @@ async def businesses() -> list[dict]:
     return await list_businesses()
 
 
+@app.post("/api/inventory/generate")
+async def generate_inventory_details(image: UploadFile = File(...)) -> dict:
+    if not image.content_type or not image.content_type.startswith("image/"):
+        raise HTTPException(422, "Upload an image to generate a listing.")
+    try:
+        return await generate_details(await image.read(), image.content_type)
+    except Exception as error:
+        raise HTTPException(502, "Could not generate listing details. Try again or enter them manually.") from error
+
+
 @app.post("/api/onboarding")
 async def onboarding(
     init_data: str = Form(""),
@@ -125,14 +137,26 @@ async def customer_chat(message: str = Form(""), business_slug: str = Form(""), 
             shutil.copyfileobj(image.file, destination)
         vector = await embed_image(saved)
     elif message.strip():
-        vector = await embed_text(message)
+        if not business_slug:
+            raise HTTPException(422, "Open a business storefront before chatting.")
+        products_by_id = {product["id"]: product for product in await catalog(business_slug)}
+        try:
+            agent_response = await answer_customer(message, list(products_by_id.values()))
+        except Exception as error:
+            raise HTTPException(502, "The shopping assistant could not respond. Please try again.") from error
+        selected = products_by_id.get(agent_response.product_id)
+        return {
+            "reply": agent_response.reply,
+            "products": [selected] if selected else [],
+            "open_buy": agent_response.open_buy,
+        }
     else:
         raise HTTPException(422, "Write a message or attach an image.")
     products = await find_products(vector, limit=1, business_slug=business_slug or None)
     if products and float(products[0]["distance"]) > MAX_PRODUCT_MATCH_DISTANCE:
         products = []
     reply = "I found a matching product." if products else "I couldn't find a confident product match yet."
-    return {"reply": reply, "products": products}
+    return {"reply": reply, "products": products, "open_buy": False}
 
 
 @app.get("/api/businesses/{slug}")

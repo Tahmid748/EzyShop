@@ -149,3 +149,23 @@ def _get_business(slug: str) -> dict[str, Any] | None:
 
 async def get_business(slug: str) -> dict[str, Any] | None:
     return await asyncio.to_thread(_get_business, slug)
+
+
+def _catalog(slug: str) -> list[dict[str, Any]]:
+    with connect(_require_database()) as connection, connection.cursor() as cursor:
+        cursor.execute(
+            """SELECT p.id, p.name, p.price, p.quantity, p.description,
+                      (SELECT image_path FROM product_images WHERE product_id = p.id LIMIT 1) AS image_path
+               FROM products p JOIN businesses b ON b.id = p.business_id
+               WHERE b.slug = %s ORDER BY p.id""",
+            (slug,),
+        )
+        columns = [column.name for column in cursor.description]
+        products = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        for product in products:
+            product["price"] = float(product["price"])
+        return products
+
+
+async def catalog(slug: str) -> list[dict[str, Any]]:
+    return await asyncio.to_thread(_catalog, slug)
