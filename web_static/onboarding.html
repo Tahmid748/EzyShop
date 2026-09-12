@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Set up EzyShop</title><link rel="stylesheet" href="/static/styles.css"><script src="https://telegram.org/js/telegram-web-app.js"></script></head>
+<body class="onboarding-page">
+  <main class="setup-card"><p class="eyebrow">EZYSHOP SETUP</p><h1>Add your business & inventory</h1><p>Start with your store name and inventory photos. You can complete each listing separately next.</p>
+    <form id="onboarding-form">
+      <section id="initial-step"><label>Business name<input name="business_name" required placeholder="e.g. Acme Fashion"></label><label>Inventory images<input id="images" name="images" type="file" accept="image/png,image/jpeg,image/webp" multiple required><small>One image creates one product listing.</small></label><button type="button" id="continue">Continue to item details</button></section>
+      <section id="details-step" hidden><h2>Item details</h2><p>Review each item before it is published. “Generate” creates a draft from the image filename; always confirm price and quantity.</p><div id="item-forms"></div><button>Save & index inventory</button></section><p id="status" role="status"></p>
+    </form>
+  </main><script src="/static/onboarding.js"></script>
+</body></html>

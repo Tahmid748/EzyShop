@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EzyShop</title><link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="chat-page">
+  <main class="chat-shell">
+    <header><div><small>SHOPPING WITH</small><h1 id="business-name">EzyShop</h1></div><span class="online">● Online</span></header>
+    <section id="messages" class="messages"><div class="bot-message">Hi! Send a product photo or tell me what you’re looking for.</div></section>
+    <form id="chat-form" class="composer">
+      <label class="image-button" title="Search by image">⌁<input id="search-image" type="file" accept="image/png,image/jpeg,image/webp"></label>
+      <input id="message" placeholder="Ask about a product…" autocomplete="off">
+      <button>Send</button>
+    </form>
+  </main>
+  <dialog id="order-dialog"><form id="order-form"><button type="button" class="close" onclick="orderDialog.close()">×</button><h2>Buy <span id="order-product"></span></h2><input type="hidden" id="product-id"><label>Your name<input id="buyer-name" required></label><label>Phone number<input id="buyer-phone" required></label><label>Delivery address<textarea id="buyer-address" required></textarea></label><button>Send order</button></form></dialog>
+  <script src="/static/chat.js"></script>
+</body>
+</html>

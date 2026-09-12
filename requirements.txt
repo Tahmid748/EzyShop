@@ -1,0 +1,10 @@
+python-telegram-bot
+python-dotenv
+openai
+psycopg[binary]
+fastapi
+uvicorn[standard]
+python-multipart
+pillow
+torch
+transformers
