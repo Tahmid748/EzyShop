@@ -1,0 +1,39 @@
+# Python Bytecode & Cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment variables & secrets (Ignores .env, .env.local, etc., but keeps .env.example)
+.env
+.env.*
+!.env.example
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+
+# Testing & Type Checking Caches
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+
+# Distribution & Packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Editor & OS Metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
